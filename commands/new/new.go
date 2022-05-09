@@ -58,10 +58,6 @@ func create(c *cli.Context) error {
 		return err
 	}
 
-	if err := os.Mkdir(path.Join(pwd, name, "components"), 0755); err != nil {
-		return err
-	}
-
 	if err := os.Mkdir(path.Join(pwd, name, "static"), 0755); err != nil {
 		return err
 	}

@@ -15,9 +15,6 @@ var (
 	/* comando new */
 	NewCommand cli.Command
 
-	/** tipo de applicacion */
-	applicationType string
-
 	/** integrate boostrap library */
 	library string
 
@@ -31,30 +28,22 @@ var (
 func init() {
 	NewCommand = cli.Command{
 		Name:        "new",
-		Aliases:     []string{"n"},
 		Usage:       "create a web scafolder web",
-		Description: "create a web or app proyect, add library add frameworks css",
+		Description: "create a web or app proyect, add library or frameworks css (optional)",
 		Action:      create,
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:        "name",
-				Usage:       "-n name_app",
+				Usage:       "-n nombre_sitio",
 				Aliases:     []string{"n"},
 				Required:    true,
 				Destination: &name, // el apuntador donde se almacena la variable del tipo
 			},
 			&cli.StringFlag{
-				Name:        "type",
-				Usage:       "-t page | application",
-				Aliases:     []string{"t"},
-				Required:    true,
-				Destination: &applicationType, // el apuntador donde se almacena la variable del tipo
-			},
-			&cli.StringFlag{
 				Name:        "library",
 				Usage:       "-l bootstrap.css | materialize.css",
 				Aliases:     []string{"l"},
-				DefaultText: "bootstrap.css",
+				DefaultText: "basic",
 				Destination: &library, // el apuntador donde se almacena la variable del tipo
 			},
 		},
@@ -101,10 +90,11 @@ func create(c *cli.Context) error {
 func readFiles(pwd string) map[string]string {
 
 	var data map[string]string = make(map[string]string)
-	bootstrap := library == "bootstrap.css" || library == ""
+	bootstrap := library == "bootstrap.css"
 	materialize := library == "materialize.css"
+	basic := library == ""
 
-	data["index.html"] = models.GetHTMLModel(bootstrap && !materialize)
+	data["index.html"] = models.GetHTMLModel(bootstrap, materialize, basic)
 	data["index.css"] = models.GetCSSModel()
 	data["index.js"] = models.GetJSModel()
 

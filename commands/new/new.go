@@ -5,8 +5,11 @@ import (
 	"errors"
 	"fmt"
 	"log"
-	"os"
 	"path"
+
+	//"log"
+	"os"
+	//"path"
 
 	"github.com/urfave/cli/v2"
 )
@@ -14,12 +17,6 @@ import (
 var (
 	/* comando new */
 	NewCommand cli.Command
-
-	/** integrate boostrap library */
-	library string
-
-	/**name of page or application to create*/
-	name string
 
 	/* path to work directory*/
 	pwd, _ = os.Getwd()
@@ -29,22 +26,53 @@ func init() {
 	NewCommand = cli.Command{
 		Name:        "new",
 		Usage:       "create a web scafolder web",
-		Description: "create a web or app proyect, add library or frameworks css (optional)",
-		Action:      create,
-		Flags: []cli.Flag{
-			&cli.StringFlag{
-				Name:        "name",
-				Usage:       "-n nombre_sitio",
-				Aliases:     []string{"n"},
-				Required:    true,
-				Destination: &name, // el apuntador donde se almacena la variable del tipo
+		Description: "create a web scafolder web",
+		Subcommands: []*cli.Command{
+			{
+				Name:        "static",
+				Aliases:     []string{"s"},
+				Description: "create a web or app proyect, add library or frameworks css (optional)",
+				Action:      create,
+				Usage:       "create static web or app proyect",
+				Flags: []cli.Flag{
+					&cli.StringFlag{
+						Name:     "name",
+						Usage:    "-n name",
+						Aliases:  []string{"n"},
+						Required: true,
+						// Destination: &name, // el apuntador donde se almacena la variable del tipo
+					},
+					&cli.StringFlag{
+						Name:        "library",
+						Usage:       "-l bootstrap.css | materialize.css",
+						Aliases:     []string{"l"},
+						DefaultText: "bootstrap.css",
+						// Value:       "bootstrap.css",  // valor por defecto
+						// Destination: &library, // el apuntador donde se almacena la variable del tipo
+					},
+				},
 			},
-			&cli.StringFlag{
-				Name:        "library",
-				Usage:       "-l bootstrap.css | materialize.css",
-				Aliases:     []string{"l"},
-				DefaultText: "basic",
-				Destination: &library, // el apuntador donde se almacena la variable del tipo
+			{
+				Name:        "wordpress",
+				Aliases:     []string{"w"},
+				Description: "Create a theme or plugin personalized to Wordpress",
+				Usage:       "create a theme or plugin to wordpress",
+				Action:      createWordpressTheme,
+				Flags: []cli.Flag{
+					&cli.StringFlag{
+						Name:     "name",
+						Usage:    "-n name",
+						Aliases:  []string{"n"},
+						Required: true,
+						// Destination: &name, // el apuntador donde se almacena la variable del tipo
+					},
+					&cli.StringFlag{
+						Name:     "type",
+						Usage:    "-t plugin | theme",
+						Aliases:  []string{"t"},
+						Required: true,
+					},
+				},
 			},
 		},
 	}
@@ -52,6 +80,10 @@ func init() {
 
 /* Crea los directorios y los archivos de inicio de la biblioteca */
 func create(c *cli.Context) error {
+
+	// recogemos los valores Args
+	name := c.String("name")
+	library := c.String("library")
 
 	// create the directories
 	if err := os.Mkdir(path.Join(pwd, name), 0755); err != nil {
@@ -71,9 +103,9 @@ func create(c *cli.Context) error {
 	}
 
 	// se leen los archivos
-	data := readFiles(pwd)
+	data := readFiles(pwd, library)
 
-	if !writeFiles(data) {
+	if !writeFiles(data, name) {
 		return errors.New(models.ColorRed + "hubo un problema al crear los archivos")
 	}
 
@@ -83,7 +115,7 @@ func create(c *cli.Context) error {
 }
 
 /* lee los modelos de archivos de forma concurrente */
-func readFiles(pwd string) map[string]string {
+func readFiles(pwd string, library string) map[string]string {
 
 	var data map[string]string = make(map[string]string)
 	bootstrap := library == "bootstrap.css"
@@ -98,7 +130,7 @@ func readFiles(pwd string) map[string]string {
 }
 
 /* escribe los archivos de forma concurrente devuelve falso si hay error */
-func writeFiles(data map[string]string) bool {
+func writeFiles(data map[string]string, name string) bool {
 
 	// channels
 	doneHTML := make(chan bool)
@@ -156,6 +188,124 @@ func writeFiles(data map[string]string) bool {
 	close(doneHTML)
 	close(doneCSS)
 	close(doneJS)
+
+	return result
+}
+
+/* crea una estructura de proyecto para wordpress */
+func createWordpressTheme(context *cli.Context) error {
+	fmt.Println("creating wordpress theme")
+
+	// name of theme or plugin type
+	name := context.String("name")
+	typeAction := context.String("type")
+
+	if typeAction == "theme" {
+
+		if err := os.Mkdir(path.Join(pwd, name), 0755); err != nil {
+			return err
+		}
+
+		if err := os.Mkdir(path.Join(pwd, name, "static"), 0755); err != nil {
+			return err
+		}
+
+		if err := os.Mkdir(path.Join(pwd, name, "static", "css"), 0755); err != nil {
+			return err
+		}
+
+		if err := os.Mkdir(path.Join(pwd, name, "static", "js"), 0755); err != nil {
+			return err
+		}
+
+		if err := os.Mkdir(path.Join(pwd, name, "includes"), 0755); err != nil {
+			return err
+		}
+
+		data := readTemplateWordpress()
+
+		if !writeFilesWordpress(data, name) {
+			return errors.New(models.ColorRed + "hubo un problema al crear los archivos")
+		}
+
+		fmt.Printf(models.ColorGreen + "Archivos creados con éxito.\n")
+
+	} else {
+
+	}
+
+	return nil
+}
+
+/* lee los templates de wordpress */
+func readTemplateWordpress() map[string]string {
+	var data = make(map[string]string)
+
+	data["index.php"] = models.GetModelWordpress()
+	data["style.css"] = models.GetModelStyleWordpress()
+	data["functions.php"] = models.GetModelFunctionsWordpress()
+
+	return data
+}
+
+func writeFilesWordpress(data map[string]string, name string) bool {
+
+	// channels
+	donePHP := make(chan bool)
+	doneCSS := make(chan bool)
+	doneFunc := make(chan bool)
+
+	go func(doneHTML chan bool) {
+		file, err := os.OpenFile(path.Join(pwd, name, "index.php"), os.O_CREATE|os.O_WRONLY, 0755)
+
+		if err != nil {
+			log.Fatalln(err)
+		}
+
+		defer file.Close()
+
+		file.WriteString(data["index.php"])
+
+		donePHP <- true
+
+	}(donePHP)
+
+	go func(doneFunc chan bool) {
+		file, err := os.OpenFile(path.Join(pwd, name, "functions.php"), os.O_CREATE|os.O_WRONLY, 0755)
+
+		if err != nil {
+			log.Fatalln(err)
+		}
+
+		defer file.Close()
+
+		file.WriteString(data["functions.php"])
+
+		doneFunc <- true
+
+	}(doneFunc)
+
+	go func(doneHTML chan bool) {
+		file, err := os.OpenFile(path.Join(pwd, name, "style.css"), os.O_CREATE|os.O_WRONLY, 0755)
+
+		if err != nil {
+			log.Fatalln(err)
+		}
+
+		defer file.Close()
+
+		file.WriteString(data["style.css"])
+
+		doneCSS <- true
+
+	}(doneCSS)
+
+	result := <-doneCSS && <-donePHP && <-doneFunc
+
+	// cerramos los canales
+	close(donePHP)
+	close(doneCSS)
+	close(doneFunc)
 
 	return result
 }

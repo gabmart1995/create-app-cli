@@ -112,9 +112,63 @@ function init() {
 	`)
 }
 
-func GetPartial(name string) string {
-	template := (` <p>{{:name}} works</p>`)
-	regex := regexp.MustCompile("[{]{2}:name[}]{2}")
+/** wordpress section */
 
-	return regex.ReplaceAllString(template, name)
+func GetModelWordpress() string {
+	template := (`
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Document</title>
+</head>
+<body>
+	index.php
+</body>
+</html>
+`)
+	return template
+}
+
+func GetModelStyleWordpress() string {
+	template := (` 
+/*
+	** Change to needs more information in: https://codex.wordpress.org/Theme_Development **
+
+	Theme Name: Create App Template
+	Author: create app cli
+	Version: 1.0
+	Description: "template created by create-app-cli"
+	License: GNU General Public License v2 or later
+	Tags: basic, responsive-design
+*/
+
+:root {
+}
+
+body {
+}
+`)
+
+	return template
+}
+
+func GetModelFunctionsWordpress() string {
+	template := (`
+<?php
+
+/** 
+*	communication file with the wordpress api you can write the functions you need to configure 
+*	your template and integrate them to the administration panel using the hooks
+*/
+
+function theme_setup() {
+}
+
+add_action('init', 'theme_setup');
+`)
+
+	return template
 }

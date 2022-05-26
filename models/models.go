@@ -1,6 +1,8 @@
 package models
 
-import "regexp"
+import (
+	"regexp"
+)
 
 // colores de consola
 const (
@@ -164,10 +166,44 @@ func GetModelFunctionsWordpress() string {
 *	your template and integrate them to the administration panel using the hooks
 */
 
+// setup theme
 function theme_setup() {
 }
 
-add_action('init', 'theme_setup');
+add_action('after_setup_theme', 'theme_setup');
+
+// add script and css
+function theme_styles() {
+}
+
+add_action('wp_enqueue_scripts', 'theme_styles');
+`)
+
+	return template
+}
+
+func GetModelWidget() string {
+	template := (`
+<?php
+/**
+*  Plugin Name: Name -- Widgets
+*  Plugin URI: 
+*  Description: Widget created by create app cli
+*  Version: 1.0.0
+*  Author: 
+*  Author URI: 
+*  
+*/
+
+if (!defined('ABSPATH')) {
+	die();
+}
+	
+/**
+* Adds to widget. more info in https://codex.wordpress.org/Widgets_API
+*/
+class Name_Widget extends WP_Widget {
+}	
 `)
 
 	return template

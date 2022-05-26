@@ -194,7 +194,8 @@ func writeFiles(data map[string]string, name string) bool {
 
 /* crea una estructura de proyecto para wordpress */
 func createWordpressTheme(context *cli.Context) error {
-	fmt.Println("creating wordpress theme")
+
+	// fmt.Println("creating wordpress theme")
 
 	// name of theme or plugin type
 	name := context.String("name")
@@ -218,6 +219,10 @@ func createWordpressTheme(context *cli.Context) error {
 			return err
 		}
 
+		if err := os.Mkdir(path.Join(pwd, name, "static", "img"), 0755); err != nil {
+			return err
+		}
+
 		if err := os.Mkdir(path.Join(pwd, name, "includes"), 0755); err != nil {
 			return err
 		}
@@ -232,6 +237,13 @@ func createWordpressTheme(context *cli.Context) error {
 
 	} else {
 
+		if err := os.Mkdir(path.Join(pwd, "plugins"), 0755); err != nil {
+			return err
+		}
+
+		createWidgetWordpress(name)
+
+		fmt.Printf(models.ColorGreen + "Archivos creados con éxito.\n")
 	}
 
 	return nil
@@ -248,6 +260,7 @@ func readTemplateWordpress() map[string]string {
 	return data
 }
 
+/* escribe los archivos de thema inicial */
 func writeFilesWordpress(data map[string]string, name string) bool {
 
 	// channels
@@ -308,4 +321,18 @@ func writeFilesWordpress(data map[string]string, name string) bool {
 	close(doneFunc)
 
 	return result
+}
+
+/* create widget wordpress */
+func createWidgetWordpress(name string) {
+
+	file, err := os.OpenFile(path.Join(pwd, "plugins", (name+"_widgets.php")), os.O_CREATE|os.O_WRONLY, 0755)
+
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	file.WriteString(models.GetModelWidget())
+
+	defer file.Close()
 }

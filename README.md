@@ -16,3 +16,4 @@ Proyecto libre puedes colaborar con el diseño de los siguientes modulos:
 - Descarga e integracion de librerias como tailwind.css, bootstrap.css, entre otros.
 - Generacion de modulos de JS para conectar web assembly (avanzado)
 - Comprmir el proyecto en formato .zip o .tar.gz
+- Creacion de un demonio para actualizar los cambios en el comando serve

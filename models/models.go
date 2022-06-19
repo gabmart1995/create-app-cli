@@ -1,7 +1,7 @@
 package models
 
 import (
-	"regexp"
+	"fmt"
 )
 
 // colores de consola
@@ -18,7 +18,7 @@ const (
 
 func GetHTMLModel(bootstrap bool, materialize bool, basic bool) string {
 
-	htmlString := (`
+	var htmlString = (`
 <!-- created by create-app-cli -->
 <!DOCTYPE html>
 <html lang="en">
@@ -27,52 +27,39 @@ func GetHTMLModel(bootstrap bool, materialize bool, basic bool) string {
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>title</title>
-		{{:link_css}}
+		%s <!-- css library -->
 		<link rel="stylesheet" href="./static/css/index.css">
 	</head>
 	<body>
 		index page
-		{{:link_script}}
+		%s <!-- js script -->
 		<script src="./static/js/index.js"></script>
 	</body>
 </html>
 	`)
 
-	var regex []*regexp.Regexp = []*regexp.Regexp{
-		regexp.MustCompile(("[{]{2}:link_css[}]{2}")),
-		regexp.MustCompile(("[{]{2}:link_script[}]{2}")),
-	}
-
-	var result string
-
 	// check library
 	if bootstrap {
 
-		result = regex[0].ReplaceAllString(
+		htmlString = fmt.Sprintf(
 			htmlString,
 			"<link href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css\" rel=\"stylesheet\" integrity=\"sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC\" crossorigin=\"anonymous\">",
-		)
-
-		result = regex[1].ReplaceAllString(
-			result,
 			"<script src=\"https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js\" integrity=\"sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM\" crossorigin=\"anonymous\"></script>",
 		)
 
 	} else if materialize {
+
 		// materialize css
-		result = regex[0].ReplaceAllString(
+		htmlString = fmt.Sprintf(
 			htmlString,
 			"<link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css\">",
-		)
-
-		result = regex[1].ReplaceAllString(
-			result,
 			"<script src=\"https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js\"></script>",
 		)
+
 	} else {
 
 		// is basic
-		result = (`
+		htmlString = (`
 <!-- created by create-app-cli -->
 <!DOCTYPE html>
 <html lang="en">
@@ -88,10 +75,10 @@ func GetHTMLModel(bootstrap bool, materialize bool, basic bool) string {
 		<script src="./static/js/index.js"></script>
 	</body>
 </html>
-			`)
+		`)
 	}
 
-	return result
+	return htmlString
 }
 
 func GetCSSModel() string {
@@ -114,7 +101,9 @@ function init() {
 	`)
 }
 
-/** wordpress section */
+/***********************/
+/*	wordpress section */
+/**********************/
 
 func GetModelWordpress() string {
 	template := (`
@@ -141,7 +130,7 @@ func GetModelStyleWordpress() string {
 
 	Theme Name: Create App Template
 	Author: create app cli
-	Version: 1.0
+	Version: 0.1
 	Description: "template created by create-app-cli"
 	License: GNU General Public License v2 or later
 	Tags: basic, responsive-design
@@ -183,28 +172,43 @@ add_action('wp_enqueue_scripts', 'theme_styles');
 }
 
 func GetModelWidget() string {
+
 	template := (`
 <?php
 /**
 *  Plugin Name: Name -- Widgets
 *  Plugin URI: 
 *  Description: Widget created by create app cli
-*  Version: 1.0.0
+*  Version: 0.1
 *  Author: 
 *  Author URI: 
 *  
 */
 
-if (!defined('ABSPATH')) {
-	die();
-}
+defined('ABSPATH') || exit;
 	
 /**
 * Adds to widget. more info in https://codex.wordpress.org/Widgets_API
 */
-class Name_Widget extends WP_Widget {
+class NameWidget extends WP_Widget {
 }	
 `)
 
 	return template
+}
+
+func GetModelPlugin() string {
+	return (`
+<?php 
+/**
+*  Plugin Name: Name -- Widgets
+*  Plugin URI: 
+*  Description: Widget created by create app cli
+*  Version: 0.1
+*  Author: 
+*  Author URI: 
+*/
+
+defined('ABSPATH') || exit;
+`)
 }

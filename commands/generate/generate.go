@@ -9,6 +9,8 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
+/* modulo creador de archivos */
+
 var (
 	/* comando new */
 	GenerateCommand cli.Command

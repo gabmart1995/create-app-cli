@@ -8,6 +8,7 @@ import (
 
 	"create-app-cli/commands/generate"
 	"create-app-cli/commands/new"
+	"create-app-cli/commands/serve"
 )
 
 var app = &cli.App{
@@ -26,8 +27,8 @@ func init() {
 	app.Commands = []*cli.Command{
 		&new.NewCommand,
 		&generate.GenerateCommand,
+		&serve.ServeCommand,
 	}
-
 }
 
 func main() {

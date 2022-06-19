@@ -1,6 +1,7 @@
 package new
 
 import (
+	"create-app-cli/helpers"
 	"create-app-cli/models"
 	"errors"
 	"fmt"
@@ -13,6 +14,8 @@ import (
 
 	"github.com/urfave/cli/v2"
 )
+
+/* modulo de generación de proyectos */
 
 var (
 	/* comando new */
@@ -44,10 +47,10 @@ func init() {
 					},
 					&cli.StringFlag{
 						Name:        "library",
-						Usage:       "-l bootstrap.css | materialize.css",
+						Usage:       "-l bootstrap | materialize | basic",
 						Aliases:     []string{"l"},
-						DefaultText: "bootstrap.css",
-						// Value:       "bootstrap.css",  // valor por defecto
+						DefaultText: "bootstrap",
+						Value:       "basic", // valor por defecto
 						// Destination: &library, // el apuntador donde se almacena la variable del tipo
 					},
 				},
@@ -68,7 +71,7 @@ func init() {
 					},
 					&cli.StringFlag{
 						Name:     "type",
-						Usage:    "-t plugin | theme",
+						Usage:    "-t plugin | theme | widget",
 						Aliases:  []string{"t"},
 						Required: true,
 					},
@@ -106,10 +109,10 @@ func create(c *cli.Context) error {
 	data := readFiles(pwd, library)
 
 	if !writeFiles(data, name) {
-		return errors.New(models.ColorRed + "hubo un problema al crear los archivos")
+		return errors.New("hubo un problema al crear los archivos")
 	}
 
-	fmt.Printf(models.ColorGreen + "Archivos creados con éxito.\n")
+	fmt.Printf("Archivos creados con éxito.\n")
 
 	return nil
 }
@@ -118,9 +121,9 @@ func create(c *cli.Context) error {
 func readFiles(pwd string, library string) map[string]string {
 
 	var data map[string]string = make(map[string]string)
-	bootstrap := library == "bootstrap.css"
-	materialize := library == "materialize.css"
-	basic := library == ""
+	bootstrap := library == "bootstrap"
+	materialize := library == "materialize"
+	basic := library == "" || library == "basic"
 
 	data["index.html"] = models.GetHTMLModel(bootstrap, materialize, basic)
 	data["index.css"] = models.GetCSSModel()
@@ -230,20 +233,36 @@ func createWordpressTheme(context *cli.Context) error {
 		data := readTemplateWordpress()
 
 		if !writeFilesWordpress(data, name) {
-			return errors.New(models.ColorRed + "hubo un problema al crear los archivos")
+			return errors.New("hubo un problema al crear los archivos")
 		}
 
-		fmt.Printf(models.ColorGreen + "Archivos creados con éxito.\n")
+		fmt.Printf("Theme creado con éxito.\n")
 
-	} else {
+	} else if typeAction == "widget" {
 
-		if err := os.Mkdir(path.Join(pwd, "plugins"), 0755); err != nil {
-			return err
+		if helpers.FileNotExists("widgets") {
+
+			if err := os.Mkdir(path.Join(pwd, "widgets"), 0755); err != nil {
+				return err
+			}
 		}
 
 		createWidgetWordpress(name)
 
-		fmt.Printf(models.ColorGreen + "Archivos creados con éxito.\n")
+		fmt.Printf("Widget creados con éxito.\n")
+
+	} else if typeAction == "plugin" {
+
+		if helpers.FileNotExists("plugins") {
+
+			if err := os.Mkdir(path.Join(pwd, "plugins"), 0755); err != nil {
+				return err
+			}
+		}
+
+		createPluginWordpress(name)
+
+		fmt.Printf("Plugin creado con éxito.\n")
 	}
 
 	return nil
@@ -326,13 +345,27 @@ func writeFilesWordpress(data map[string]string, name string) bool {
 /* create widget wordpress */
 func createWidgetWordpress(name string) {
 
-	file, err := os.OpenFile(path.Join(pwd, "plugins", (name+"_widgets.php")), os.O_CREATE|os.O_WRONLY, 0755)
+	file, err := os.OpenFile(path.Join(pwd, "widgets", (name+".php")), os.O_CREATE|os.O_WRONLY, 0755)
 
 	if err != nil {
 		log.Fatalln(err)
 	}
 
 	file.WriteString(models.GetModelWidget())
+
+	defer file.Close()
+}
+
+/* create plugin wordpress */
+func createPluginWordpress(name string) {
+
+	file, err := os.OpenFile(path.Join(pwd, "plugins", (name+".php")), os.O_CREATE|os.O_WRONLY, 0755)
+
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	file.WriteString(models.GetModelPlugin())
 
 	defer file.Close()
 }

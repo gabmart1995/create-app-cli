@@ -61,10 +61,11 @@ func serve(c *cli.Context) error {
 	http.Handle("/", http.StripPrefix("/", fileServer))
 
 	message := fmt.Sprintf(`
-		Este es un servidor de desarrollo. No usar en producción
-		Servidor estatico operando en el puerto %d
-		Pulsa Control + C para cerrar el servicio
-	`, port)
+Este es un servidor de desarrollo. No usar en producción
+
+Servidor estatico operando en la direccion: "http://%s:%d"
+Pulsa Control + C para cerrar el servicio
+	`, address, port)
 
 	fmt.Println(message)
 

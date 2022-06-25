@@ -31,7 +31,7 @@ func GetHTMLModel(bootstrap bool, materialize bool, basic bool) string {
 		<link rel="stylesheet" href="./static/css/index.css">
 	</head>
 	<body>
-		index page
+		<h1>index works</h1>
 		%s <!-- js script -->
 		<script src="./static/js/index.js"></script>
 	</body>
@@ -71,7 +71,7 @@ func GetHTMLModel(bootstrap bool, materialize bool, basic bool) string {
 		<link rel="stylesheet" href="./static/css/index.css">
 	</head>
 	<body>
-		index page
+		<h1>index works</h1>
 		<script src="./static/js/index.js"></script>
 	</body>
 </html>
@@ -116,7 +116,7 @@ func GetModelWordpress() string {
 	<title>Document</title>
 </head>
 <body>
-	index.php
+	<h1>index works</h1>
 </body>
 </html>
 `)

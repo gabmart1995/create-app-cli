@@ -60,17 +60,19 @@ func serve(c *cli.Context) error {
 	fileServer := http.FileServer(http.Dir(directory))
 	http.Handle("/", http.StripPrefix("/", fileServer))
 
-	message := fmt.Sprintf(`
-Este es un servidor de desarrollo. No usar en producción
-
-Servidor estatico operando en la direccion: "http://%s:%d"
-Pulsa Control + C para cerrar el servicio
-	`, address, port)
-
-	fmt.Println(message)
+	printMessages(address, port)
 
 	// si existe algun error desde la plataforma
 	log.Fatal(http.ListenAndServe(fmt.Sprintf("%s:%d", address, port), nil))
 
 	return nil
+}
+
+func printMessages(address string, port int) {
+
+	fmt.Println("Este es un servidor de desarrollo. No usar en producción")
+	fmt.Println(
+		fmt.Sprintf("Servidor estatico operando en la direccion: \"http://%s:%d\"", address, port),
+	)
+	fmt.Println("Pulsa Control + C para cerrar el servicio")
 }

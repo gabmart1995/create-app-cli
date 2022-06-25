@@ -49,7 +49,7 @@ func init() {
 						Name:        "library",
 						Usage:       "-l bootstrap | materialize | basic",
 						Aliases:     []string{"l"},
-						DefaultText: "bootstrap",
+						DefaultText: "basic",
 						Value:       "basic", // valor por defecto
 						// Destination: &library, // el apuntador donde se almacena la variable del tipo
 					},

@@ -1,11 +1,7 @@
 package models
 
-import (
-	"fmt"
-)
-
-// colores de consola
-const (
+// colores de consola UNIX
+/* const (
 	ColorBlack  = "\u001b[30m"
 	ColorRed    = "\u001b[31m"
 	ColorGreen  = "\u001b[32m"
@@ -14,9 +10,9 @@ const (
 	ColorReset  = "\u001b[0m"
 	ColorCyan   = "\u001B[36m"
 	ColorWhite  = "\u001B[37m"
-)
+) */
 
-func GetHTMLModel(bootstrap bool, materialize bool, basic bool) string {
+func GetHTMLModel() string {
 
 	var htmlString = (`
 <!-- created by create-app-cli -->
@@ -27,57 +23,16 @@ func GetHTMLModel(bootstrap bool, materialize bool, basic bool) string {
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<title>title</title>
-		%s <!-- css library -->
+		<!-- css library -->
 		<link rel="stylesheet" href="./static/css/index.css">
 	</head>
 	<body>
 		<h1>index works</h1>
-		%s <!-- js script -->
+		<!-- js script -->
 		<script src="./static/js/index.js"></script>
 	</body>
 </html>
 	`)
-
-	// check library
-	if bootstrap {
-
-		htmlString = fmt.Sprintf(
-			htmlString,
-			"<link href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css\" rel=\"stylesheet\" integrity=\"sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC\" crossorigin=\"anonymous\">",
-			"<script src=\"https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js\" integrity=\"sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM\" crossorigin=\"anonymous\"></script>",
-		)
-
-	} else if materialize {
-
-		// materialize css
-		htmlString = fmt.Sprintf(
-			htmlString,
-			"<link rel=\"stylesheet\" href=\"https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css\">",
-			"<script src=\"https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js\"></script>",
-		)
-
-	} else {
-
-		// is basic
-		htmlString = (`
-<!-- created by create-app-cli -->
-<!DOCTYPE html>
-<html lang="en">
-	<head>
-		<meta charset="UTF-8">
-		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title>title</title>
-		<link rel="stylesheet" href="./static/css/index.css">
-	</head>
-	<body>
-		<h1>index works</h1>
-		<script src="./static/js/index.js"></script>
-	</body>
-</html>
-		`)
-	}
-
 	return htmlString
 }
 
@@ -201,7 +156,7 @@ func GetModelPlugin() string {
 	return (`
 <?php 
 /**
-*  Plugin Name: Name -- Widgets
+*  Plugin Name: Name -- Plugins
 *  Plugin URI: 
 *  Description: Widget created by create app cli
 *  Version: 0.1

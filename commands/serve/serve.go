@@ -10,7 +10,7 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-/** modulo de creacion de servidor web de desarrollo */
+/** modulo del servidor de dearrollo */
 
 var (
 	ServeCommand cli.Command
@@ -45,12 +45,21 @@ func init() {
 	}
 }
 
+/* corre el servidor en modo de desarrollo */
 func serve(c *cli.Context) error {
 
 	// recogemos las variables
 	address := c.String("address")
 	port := c.Int("port")
 	directory := c.Path("directory")
+
+	printMessages := func(address string, port int) {
+
+		messageServer := fmt.Sprintf("Servidor estatico operando en la dirección: \"http://%s:%d\"", address, port)
+		fmt.Println("Este es un servidor de desarrollo. No usar en producción")
+		fmt.Println(messageServer)
+		fmt.Println("Pulsa Control + C para cerrar el servicio")
+	}
 
 	if helpers.FileNotExists(directory) {
 		return errors.New("no existe directorio donde mostrar los archivos en la web")
@@ -66,13 +75,4 @@ func serve(c *cli.Context) error {
 	log.Fatal(http.ListenAndServe(fmt.Sprintf("%s:%d", address, port), nil))
 
 	return nil
-}
-
-func printMessages(address string, port int) {
-
-	fmt.Println("Este es un servidor de desarrollo. No usar en producción")
-	fmt.Println(
-		fmt.Sprintf("Servidor estatico operando en la direccion: \"http://%s:%d\"", address, port),
-	)
-	fmt.Println("Pulsa Control + C para cerrar el servicio")
 }

@@ -1,7 +1,6 @@
 package generate
 
 import (
-	"create-app-cli/models"
 	"fmt"
 	"log"
 	"os"
@@ -68,7 +67,7 @@ func generateFile(c *cli.Context) error {
 	_, err := os.Stat(pathDestination)
 
 	if !os.IsNotExist(err) {
-		fmt.Println(models.ColorRed + "el archivo existe en la ubicacion seleccionada")
+		fmt.Println("el archivo existe en la ubicacion seleccionada")
 		return err
 	}
 
@@ -80,7 +79,7 @@ func generateFile(c *cli.Context) error {
 
 	defer file.Close()
 
-	fmt.Println(models.ColorGreen + "Archivo creado con éxito")
+	fmt.Println("Archivo creado con éxito")
 
 	return nil
 }
@@ -93,7 +92,7 @@ func generateDirectory(c *cli.Context) error {
 		return err
 	}
 
-	fmt.Println(models.ColorGreen + "Directorio creado con éxito")
+	fmt.Println("Directorio creado con éxito")
 
 	return nil
 }

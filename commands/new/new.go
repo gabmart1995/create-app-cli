@@ -45,14 +45,6 @@ func init() {
 						Required: true,
 						// Destination: &name, // el apuntador donde se almacena la variable del tipo
 					},
-					&cli.StringFlag{
-						Name:        "library",
-						Usage:       "-l bootstrap | materialize | basic",
-						Aliases:     []string{"l"},
-						DefaultText: "basic",
-						Value:       "basic", // valor por defecto
-						// Destination: &library, // el apuntador donde se almacena la variable del tipo
-					},
 				},
 			},
 			{
@@ -86,7 +78,6 @@ func create(c *cli.Context) error {
 
 	// recogemos los valores Args
 	name := c.String("name")
-	library := c.String("library")
 
 	// create the directories
 	if err := os.Mkdir(path.Join(pwd, name), 0755); err != nil {
@@ -106,7 +97,7 @@ func create(c *cli.Context) error {
 	}
 
 	// se leen los archivos
-	data := readFiles(pwd, library)
+	data := readFiles(pwd)
 
 	if !writeFiles(data, name) {
 		return errors.New("hubo un problema al crear los archivos")
@@ -118,16 +109,13 @@ func create(c *cli.Context) error {
 }
 
 /* lee los modelos de archivos de forma concurrente */
-func readFiles(pwd string, library string) map[string]string {
+func readFiles(pwd string) map[string]string {
 
 	var data map[string]string = make(map[string]string)
-	bootstrap := library == "bootstrap"
-	materialize := library == "materialize"
-	basic := library == "" || library == "basic"
 
-	data["index.html"] = models.GetHTMLModel(bootstrap, materialize, basic)
-	data["index.css"] = models.GetCSSModel()
-	data["index.js"] = models.GetJSModel()
+	data["html"] = models.GetHTMLModel()
+	data["css"] = models.GetCSSModel()
+	data["js"] = models.GetJSModel()
 
 	return data
 }
@@ -149,7 +137,7 @@ func writeFiles(data map[string]string, name string) bool {
 
 		defer file.Close()
 
-		file.WriteString(data["index.html"])
+		file.WriteString(data["html"])
 
 		doneHTML <- true
 
@@ -164,7 +152,7 @@ func writeFiles(data map[string]string, name string) bool {
 
 		defer file.Close()
 
-		file.WriteString(data["index.css"])
+		file.WriteString(data["css"])
 
 		doneCSS <- true
 
@@ -179,7 +167,7 @@ func writeFiles(data map[string]string, name string) bool {
 
 		defer file.Close()
 
-		file.WriteString(data["index.js"])
+		file.WriteString(data["js"])
 
 		doneJS <- true
 
@@ -194,6 +182,10 @@ func writeFiles(data map[string]string, name string) bool {
 
 	return result
 }
+
+/* ===================================	*/
+/*  Wordpress 							*/
+/* =================================== 	*/
 
 /* crea una estructura de proyecto para wordpress */
 func createWordpressTheme(context *cli.Context) error {
@@ -279,7 +271,7 @@ func readTemplateWordpress() map[string]string {
 	return data
 }
 
-/* escribe los archivos de thema inicial */
+/* escribe los archivos de tema inicial */
 func writeFilesWordpress(data map[string]string, name string) bool {
 
 	// channels
@@ -342,7 +334,6 @@ func writeFilesWordpress(data map[string]string, name string) bool {
 	return result
 }
 
-/* create widget wordpress */
 func createWidgetWordpress(name string) {
 
 	file, err := os.OpenFile(path.Join(pwd, "widgets", (name+".php")), os.O_CREATE|os.O_WRONLY, 0755)
@@ -356,7 +347,6 @@ func createWidgetWordpress(name string) {
 	defer file.Close()
 }
 
-/* create plugin wordpress */
 func createPluginWordpress(name string) {
 
 	file, err := os.OpenFile(path.Join(pwd, "plugins", (name+".php")), os.O_CREATE|os.O_WRONLY, 0755)

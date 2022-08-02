@@ -2,7 +2,7 @@ package helpers
 
 import "os"
 
-/* valida si un direcotrio o archivo existe */
+/* valida si un directorio o archivo existe */
 func FileNotExists(name string) bool {
 
 	_, err := os.Stat(name)

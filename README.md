@@ -4,16 +4,16 @@ Cli generado en Golang, generador de contenido estatico, archivos y directorios 
 
 ## Para compilar
 
-`go bulid -o create-app-cli main.go`
+`go build -o create-app-cli main.go`
 
 
 ### Modulos
 
 Proyecto libre puedes colaborar con el diseño de los siguientes modulos:
 
-- Generar archivos para react, angular y vue.
+- Integrar estructura de web components (logrado) 
 - Creacion de estructura de carpetas para backend.
-- Descarga e integracion de librerias como tailwind.css, bootstrap.css, entre otros.
+- Descarga e integracion de librerias como tailwind.css, bootstrap.css, entre otros a traves de su CDN.
 - Generacion de modulos de JS para conectar web assembly (avanzado)
 - Comprmir el proyecto en formato .zip o .tar.gz
 - Creacion de un demonio para actualizar los cambios en el comando serve

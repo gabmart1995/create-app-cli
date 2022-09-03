@@ -1,9 +1,10 @@
 package generate
 
 import (
+	"create-app-cli/helpers"
+	"create-app-cli/models"
 	"fmt"
-	"log"
-	"os"
+	"path"
 
 	"github.com/urfave/cli/v2"
 )
@@ -13,11 +14,9 @@ import (
 var (
 	/* comando new */
 	GenerateCommand cli.Command
-
-	/** path */
-	pathDestination string
 )
 
+/* constructor del modulo */
 func init() {
 	GenerateCommand = cli.Command{
 		Name:        "generate",
@@ -33,11 +32,10 @@ func init() {
 				Usage:       "path to generate the file in the specified path",
 				Flags: []cli.Flag{
 					&cli.PathFlag{
-						Required:    true,
-						Name:        "path",
-						Aliases:     []string{"p"},
-						Destination: &pathDestination,
-						Usage:       "path to generate the file in the specified path",
+						Required: true,
+						Name:     "path",
+						Aliases:  []string{"p"},
+						Usage:    "path to generate the file in the specified path",
 					},
 				},
 			},
@@ -49,11 +47,31 @@ func init() {
 				Usage:       "path to generate the directory in the specified path",
 				Flags: []cli.Flag{
 					&cli.PathFlag{
-						Required:    true,
-						Name:        "path",
-						Aliases:     []string{"p"},
-						Destination: &pathDestination,
-						Usage:       "path to generate the directory",
+						Required: true,
+						Name:     "path",
+						Aliases:  []string{"p"},
+						Usage:    "path to generate the directory",
+					},
+				},
+			},
+			{
+				Name:        "component",
+				Aliases:     []string{"c"},
+				Action:      generateComponent,
+				Description: "generate a web component in your proyect",
+				Usage:       "path to generate a web component in the specified path",
+				Flags: []cli.Flag{
+					&cli.PathFlag{
+						Required: true,
+						Name:     "path",
+						Aliases:  []string{"p"},
+						Usage:    "path to generate the directory",
+					},
+					&cli.StringFlag{
+						Required: true,
+						Name:     "name",
+						Aliases:  []string{"n"},
+						Usage:    "name of component",
 					},
 				},
 			},
@@ -64,20 +82,11 @@ func init() {
 /* genera el archivo especificado */
 func generateFile(c *cli.Context) error {
 
-	_, err := os.Stat(pathDestination)
+	filePath := c.Path("path")
 
-	if !os.IsNotExist(err) {
-		fmt.Println("el archivo existe en la ubicacion seleccionada")
+	if err := helpers.CreateFile(filePath, ""); err != nil {
 		return err
 	}
-
-	file, err := os.OpenFile(pathDestination, os.O_CREATE|os.O_WRONLY, 0755)
-
-	if err != nil {
-		log.Fatalln(err)
-	}
-
-	defer file.Close()
 
 	fmt.Println("Archivo creado con éxito")
 
@@ -87,12 +96,33 @@ func generateFile(c *cli.Context) error {
 /* genera el archivo espcificado */
 func generateDirectory(c *cli.Context) error {
 
+	filePath := c.Path("path")
+
 	// create the directories
-	if err := os.Mkdir(pathDestination, 0755); err != nil {
+	if err := helpers.CreateDirectory(filePath); err != nil {
 		return err
 	}
 
-	fmt.Println("Directorio creado con éxito")
+	return nil
+}
+
+func generateComponent(c *cli.Context) error {
+
+	filePath := c.Path("path")
+	name := c.String("name")
+
+	if err := helpers.CreateDirectory(filePath); err != nil {
+		return err
+	}
+
+	model := models.GetModelComponent(name)
+
+	// recorremos el map y generamos los archivos
+	for key, value := range model {
+		if err := helpers.CreateFile(path.Join(filePath, key), value); err != nil {
+			return err
+		}
+	}
 
 	return nil
 }

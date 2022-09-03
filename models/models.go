@@ -1,5 +1,7 @@
 package models
 
+import "fmt"
+
 // colores de consola UNIX
 /* const (
 	ColorBlack  = "\u001b[30m"
@@ -166,4 +168,56 @@ func GetModelPlugin() string {
 
 defined('ABSPATH') || exit;
 `)
+}
+
+/* create the model of web component */
+func GetModelComponent(name string) map[string]string {
+	modelFiles := make(map[string]string)
+
+	name += "-component"
+
+	// html
+	modelFiles[name+".html"] = fmt.Sprintf(`
+<!-- /* web-component create-app-cli */ -->
+<link rel="stylesheet" href="" />
+<div>
+	<p>%s works<p>
+<div>	
+`, name)
+
+	// css
+	modelFiles[name+".css"] = (`
+/* web-component create-app-cli */	
+p {
+}
+`)
+	// js
+	modelFiles[name+".js"] = fmt.Sprintf(`
+class MyComponent extends HTMLElement {
+	constructor() {
+		super();
+	}
+
+	/* props observed */
+	static get observedAttributes() {
+		return [];
+	}
+
+	connectedCallback() {
+	}
+
+	attributeChangedCallback( name, newValue, oldValue ) {
+	}
+
+	render() {
+	}
+
+	disconnectedCallback() {
+	}
+}
+
+customElements.define('%s', MyComponent);
+	`, name)
+
+	return modelFiles
 }

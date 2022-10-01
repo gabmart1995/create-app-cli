@@ -206,7 +206,7 @@ class MyComponent extends HTMLElement {
 	connectedCallback() {
 	}
 
-	attributeChangedCallback( name, newValue, oldValue ) {
+	attributeChangedCallback( name, oldValue, newValue ) {
 	}
 
 	render() {

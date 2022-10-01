@@ -181,7 +181,7 @@ func GetModelComponent(name string) map[string]string {
 <!-- /* web-component create-app-cli */ -->
 <link rel="stylesheet" href="" />
 <div>
-	<p>%s works<p>
+	<p>%s works</p>
 </div>	
 `, name)
 

@@ -182,7 +182,7 @@ func GetModelComponent(name string) map[string]string {
 <link rel="stylesheet" href="" />
 <div>
 	<p>%s works<p>
-<div>	
+</div>	
 `, name)
 
 	// css

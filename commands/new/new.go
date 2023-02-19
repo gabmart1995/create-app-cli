@@ -69,6 +69,22 @@ func init() {
 					},
 				},
 			},
+			{
+				Name:        "electron",
+				Aliases:     []string{"e"},
+				Description: "Create a scafolder to build a electron desktop app",
+				Usage:       "Create a scafolder to build a electron desktop app",
+				Action:      createElectron,
+				Flags: []cli.Flag{
+					&cli.StringFlag{
+						Name:     "name",
+						Usage:    "-n name",
+						Aliases:  []string{"n"},
+						Required: true,
+						// Destination: &name, // el apuntador donde se almacena la variable del tipo
+					},
+				},
+			},
 		},
 	}
 }

@@ -6,7 +6,6 @@ package new
 import (
 	"create-app-cli/models"
 	"encoding/json"
-	"fmt"
 	"os"
 	"path"
 
@@ -14,16 +13,16 @@ import (
 )
 
 type configElectron struct {
-	Name           string                 `json:"name"`
-	Version        string                 `json:"version"`
-	Description    string                 `json:"description"`
-	Main           string                 `json:"main"`
-	Scripts        map[string]string      `json:"scripts"`
-	Author         string                 `json:"author"`
-	License        string                 `json:"license"`
-	Config         map[string]interface{} `json:"config"`
-	DevDependences map[string]string      `json:"devdependences"`
-	Dependences    map[string]string      `json:"dependences"`
+	Name            string                 `json:"name"`
+	Version         string                 `json:"version"`
+	Description     string                 `json:"description"`
+	Main            string                 `json:"main"`
+	Scripts         map[string]string      `json:"scripts"`
+	Author          string                 `json:"author"`
+	License         string                 `json:"license"`
+	Config          map[string]interface{} `json:"config"`
+	DevDependencies map[string]string      `json:"devDependencies"`
+	Dependencies    map[string]string      `json:"dependencies"`
 }
 
 func createElectron(c *cli.Context) error {
@@ -33,8 +32,8 @@ func createElectron(c *cli.Context) error {
 
 	config := configElectron{
 		Name:        name,
-		Version:     "1.0",
-		Description: "",
+		Version:     "1.0.0",
+		Description: "My Electron application description",
 		Main:        "src/index.js",
 		Scripts: map[string]string{
 			"electron-app": "electron .",
@@ -43,16 +42,16 @@ func createElectron(c *cli.Context) error {
 			"make":         "electron-forge make",
 		},
 		Author:  "",
-		License: "",
-		DevDependences: map[string]string{
-			"@electron-forge/cli":       "6.0.0-beta.44",
-			"@electron-forge/maker-deb": "6.0.0-beta.44",
-			"@electron-forge/maker-rpm": "6.0.0-beta.44",
-			"@electron-forge/squirrel":  "6.0.0-beta.44",
-			"@electron-forge/maker-zip": "6.0.0-beta.44",
-			"electron":                  "10.4.7",
+		License: "MIT",
+		DevDependencies: map[string]string{
+			"@electron-forge/cli":            "6.0.0-beta.44",
+			"@electron-forge/maker-deb":      "6.0.0-beta.44",
+			"@electron-forge/maker-rpm":      "6.0.0-beta.44",
+			"@electron-forge/maker-squirrel": "6.0.0-beta.44",
+			"@electron-forge/maker-zip":      "6.0.0-beta.44",
+			"electron":                       "10.4.7",
 		},
-		Dependences: map[string]string{},
+		Dependencies: map[string]string{},
 		Config: map[string]interface{}{
 			"forge": map[string]interface{}{
 				"packagerConfig": map[string]interface{}{},
@@ -91,15 +90,18 @@ func createElectron(c *cli.Context) error {
 		return err
 	}
 
+	if err := os.Mkdir(path.Join(pathFiles, "src", "frontend"), 0755); err != nil {
+		return err
+	}
+
 	createPackageJSON(path.Join(pathFiles, "package.json"), &config)
-	createIndexFile(path.Join(pathFiles, "src", "index.js"))
+	createFile(path.Join(pathFiles, "src", "index.js"), models.GetIndexElectron())
+	createFile(path.Join(pathFiles, "src", "frontend", "index.html"), models.GetElectronHTML())
 
 	return nil
 }
 
 func createPackageJSON(pathFiles string, config *configElectron) error {
-
-	fmt.Println(pathFiles)
 
 	file, err := os.OpenFile(
 		pathFiles,
@@ -121,7 +123,7 @@ func createPackageJSON(pathFiles string, config *configElectron) error {
 	return nil
 }
 
-func createIndexFile(pathFiles string) error {
+func createFile(pathFiles string, model string) error {
 
 	file, err := os.OpenFile(
 		pathFiles,
@@ -135,7 +137,7 @@ func createIndexFile(pathFiles string) error {
 
 	defer file.Close()
 
-	file.WriteString(models.GetIndexElectron())
+	file.WriteString(model)
 
 	return nil
 }

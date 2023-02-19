@@ -4,14 +4,18 @@
 package new
 
 import (
+	"create-app-cli/models"
+	"encoding/json"
 	"fmt"
+	"os"
+	"path"
 
 	"github.com/urfave/cli/v2"
 )
 
 type configElectron struct {
 	Name           string                 `json:"name"`
-	Version        int64                  `json:"version"`
+	Version        string                 `json:"version"`
 	Description    string                 `json:"description"`
 	Main           string                 `json:"main"`
 	Scripts        map[string]string      `json:"scripts"`
@@ -25,10 +29,11 @@ type configElectron struct {
 func createElectron(c *cli.Context) error {
 
 	name := c.String("name")
+	var pathFiles = path.Join(pwd, name)
 
 	config := configElectron{
 		Name:        name,
-		Version:     1.0,
+		Version:     "1.0",
 		Description: "",
 		Main:        "src/index.js",
 		Scripts: map[string]string{
@@ -47,16 +52,90 @@ func createElectron(c *cli.Context) error {
 			"@electron-forge/maker-zip": "6.0.0-beta.44",
 			"electron":                  "10.4.7",
 		},
+		Dependences: map[string]string{},
+		Config: map[string]interface{}{
+			"forge": map[string]interface{}{
+				"packagerConfig": map[string]interface{}{},
+				"makers": []map[string]interface{}{
+					{
+						"name":   "@electron-forge/maker-deb",
+						"config": map[string]interface{}{},
+					},
+					{
+						"name":   "@electron-forge/maker-rpm",
+						"config": map[string]interface{}{},
+					},
+					{
+						"name": "@electron-forge/maker-squirrel",
+						"config": map[string]interface{}{
+							"name": name,
+						},
+					},
+					{
+						"name": "@electron-forge/maker-zip",
+						"config": []string{
+							"darwin",
+						},
+					},
+				},
+			},
+		},
 	}
 
-	/*if err := os.Mkdir(path.Join(pwd, name), 0755); err != nil {
+	if err := os.Mkdir(pathFiles, 0755); err != nil {
 		return err
-	}*/
+	}
 
-	fmt.Println(config)
-	// creamos los archivos
+	// set Path files to new location
+	if err := os.Mkdir(path.Join(pathFiles, "src"), 0755); err != nil {
+		return err
+	}
 
-	// package.json
+	createPackageJSON(path.Join(pathFiles, "package.json"), &config)
+	createIndexFile(path.Join(pathFiles, "src", "index.js"))
+
+	return nil
+}
+
+func createPackageJSON(pathFiles string, config *configElectron) error {
+
+	fmt.Println(pathFiles)
+
+	file, err := os.OpenFile(
+		pathFiles,
+		os.O_CREATE|os.O_WRONLY,
+		0755,
+	)
+
+	if err != nil {
+		return err
+	}
+
+	defer file.Close()
+
+	jsonBytes, _ := json.Marshal(&config)
+
+	// escribimos el archivo
+	file.Write(jsonBytes)
+
+	return nil
+}
+
+func createIndexFile(pathFiles string) error {
+
+	file, err := os.OpenFile(
+		pathFiles,
+		os.O_CREATE|os.O_WRONLY,
+		0755,
+	)
+
+	if err != nil {
+		return err
+	}
+
+	defer file.Close()
+
+	file.WriteString(models.GetIndexElectron())
 
 	return nil
 }

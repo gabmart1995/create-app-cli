@@ -98,6 +98,8 @@ func createElectron(c *cli.Context) error {
 	createFile(path.Join(pathFiles, "src", "index.js"), models.GetIndexElectron())
 	createFile(path.Join(pathFiles, "src", "frontend", "index.html"), models.GetElectronHTML())
 
+	println("Archivos creados con éxito")
+
 	return nil
 }
 

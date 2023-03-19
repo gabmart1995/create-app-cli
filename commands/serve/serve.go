@@ -37,9 +37,10 @@ func init() {
 				DefaultText: "3000",
 			},
 			&cli.PathFlag{
-				Name:     "directory",
-				Aliases:  []string{"t"},
-				Required: true,
+				Name:        "directory",
+				Aliases:     []string{"t"},
+				Required:    true,
+				DefaultText: ".",
 			},
 		},
 	}

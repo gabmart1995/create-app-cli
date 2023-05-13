@@ -2,7 +2,7 @@ package generate
 
 import (
 	"create-app-cli/helpers"
-	"create-app-cli/models"
+	"create-app-cli/snipets"
 	"fmt"
 	"path"
 
@@ -115,7 +115,7 @@ func generateComponent(c *cli.Context) error {
 		return err
 	}
 
-	model := models.GetModelComponent(name)
+	model := snipets.GetModelComponent(name)
 
 	// recorremos el map y generamos los archivos
 	for key, value := range model {

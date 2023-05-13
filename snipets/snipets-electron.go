@@ -1,4 +1,4 @@
-package models
+package snipets
 
 func GetIndexElectron() string {
 	return (`

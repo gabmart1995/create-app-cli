@@ -2,7 +2,7 @@ package new
 
 import (
 	"create-app-cli/helpers"
-	"create-app-cli/models"
+	"create-app-cli/snipets"
 	"errors"
 	"fmt"
 	"log"
@@ -85,6 +85,22 @@ func init() {
 					},
 				},
 			},
+			{
+				Name:        "react",
+				Aliases:     []string{"r"},
+				Description: "Create a scafolder with webpack to use react",
+				Usage:       "Create a scafolder with webpack to use react",
+				Action:      createReactStructure,
+				Flags: []cli.Flag{
+					&cli.StringFlag{
+						Name:     "name",
+						Usage:    "-n name",
+						Aliases:  []string{"n"},
+						Required: true,
+						// Destination: &name, // el apuntador donde se almacena la variable del tipo
+					},
+				},
+			},
 		},
 	}
 }
@@ -129,9 +145,9 @@ func readFiles(pwd string) map[string]string {
 
 	var data map[string]string = make(map[string]string)
 
-	data["html"] = models.GetHTMLModel()
-	data["css"] = models.GetCSSModel()
-	data["js"] = models.GetJSModel()
+	data["html"] = snipets.GetHTMLModel()
+	data["css"] = snipets.GetCSSModel()
+	data["js"] = snipets.GetJSModel()
 
 	return data
 }
@@ -280,9 +296,9 @@ func createWordpressTheme(context *cli.Context) error {
 func readTemplateWordpress() map[string]string {
 	var data = make(map[string]string)
 
-	data["index.php"] = models.GetModelWordpress()
-	data["style.css"] = models.GetModelStyleWordpress()
-	data["functions.php"] = models.GetModelFunctionsWordpress()
+	data["index.php"] = snipets.GetModelWordpress()
+	data["style.css"] = snipets.GetModelStyleWordpress()
+	data["functions.php"] = snipets.GetModelFunctionsWordpress()
 
 	return data
 }
@@ -358,7 +374,7 @@ func createWidgetWordpress(name string) {
 		log.Fatalln(err)
 	}
 
-	file.WriteString(models.GetModelWidget())
+	file.WriteString(snipets.GetModelWidget())
 
 	defer file.Close()
 }
@@ -371,7 +387,7 @@ func createPluginWordpress(name string) {
 		log.Fatalln(err)
 	}
 
-	file.WriteString(models.GetModelPlugin())
+	file.WriteString(snipets.GetModelPlugin())
 
 	defer file.Close()
 }

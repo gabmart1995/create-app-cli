@@ -5,6 +5,7 @@ package new
 
 import (
 	"create-app-cli/models"
+	"create-app-cli/snipets"
 	"encoding/json"
 	"fmt"
 	"os"
@@ -13,25 +14,12 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-type configElectron struct {
-	Name            string                 `json:"name"`
-	Version         string                 `json:"version"`
-	Description     string                 `json:"description"`
-	Main            string                 `json:"main"`
-	Scripts         map[string]string      `json:"scripts"`
-	Author          string                 `json:"author"`
-	License         string                 `json:"license"`
-	Config          map[string]interface{} `json:"config"`
-	DevDependencies map[string]string      `json:"devDependencies"`
-	Dependencies    map[string]string      `json:"dependencies"`
-}
-
 func createElectron(c *cli.Context) error {
 
 	name := c.String("name")
 	var pathFiles = path.Join(pwd, name)
 
-	config := configElectron{
+	config := models.Config{
 		Name:        name,
 		Version:     "1.0.0",
 		Description: "My Electron application description",
@@ -96,15 +84,15 @@ func createElectron(c *cli.Context) error {
 	}
 
 	createPackageJSON(path.Join(pathFiles, "package.json"), &config)
-	createFile(path.Join(pathFiles, "src", "index.js"), models.GetIndexElectron())
-	createFile(path.Join(pathFiles, "src", "frontend", "index.html"), models.GetElectronHTML())
+	createFile(path.Join(pathFiles, "src", "index.js"), snipets.GetIndexElectron())
+	createFile(path.Join(pathFiles, "src", "frontend", "index.html"), snipets.GetElectronHTML())
 
 	fmt.Println("Archivos creados con éxito")
 
 	return nil
 }
 
-func createPackageJSON(pathFiles string, config *configElectron) error {
+func createPackageJSON(pathFiles string, config *models.Config) error {
 
 	file, err := os.OpenFile(
 		pathFiles,

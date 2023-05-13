@@ -13,6 +13,7 @@ Proyecto libre puedes colaborar con el diseño de los siguientes modulos:
 
 - Integrar estructura de web components (logrado) 
 - Integrar una estructura basica para desarrollar una aplicacion en electronJS (logrado)
+- Integrar una estructura para proyectos para react con webpack para practicar (logrado)
 - Creacion de estructura de carpetas para backend.
 - Descarga e integracion de librerias como tailwind.css, bootstrap.css, entre otros a traves de su CDN.
 - Generacion de modulos de JS para conectar web assembly (avanzado)

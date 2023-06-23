@@ -99,6 +99,13 @@ func init() {
 						Required: true,
 						// Destination: &name, // el apuntador donde se almacena la variable del tipo
 					},
+					&cli.BoolFlag{
+						Name:     "latest",
+						Usage:    "-l true",
+						Aliases:  []string{"l"},
+						Required: false,
+						Value:    false,
+					},
 				},
 			},
 		},

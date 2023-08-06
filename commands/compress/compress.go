@@ -20,14 +20,14 @@ func init() {
 	CompressCommand = cli.Command{
 		Name:        "compress",
 		Aliases:     []string{"c"},
-		Usage:       "Compress the proyect in zip format",
-		Description: "Compress the proyect in zip format",
+		Usage:       "compress the proyect in zip format",
+		Description: "compress the proyect in zip format",
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:        "name",
 				Aliases:     []string{"n"},
 				Required:    true,
-				DefaultText: "archivo.zip",
+				DefaultText: "file.zip",
 			},
 			&cli.PathFlag{
 				Name:     "file",
@@ -39,12 +39,6 @@ func init() {
 				Aliases:  []string{"d"},
 				Required: false,
 				// DefaultText: ".",
-			},
-			&cli.BoolFlag{
-				Name:     "recursive",
-				Aliases:  []string{"r"},
-				Required: false,
-				Value:    false,
 			},
 		},
 		Action: compress,

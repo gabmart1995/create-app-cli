@@ -72,8 +72,8 @@ func init() {
 			{
 				Name:        "electron",
 				Aliases:     []string{"e"},
-				Description: "Create a scafolder to build a electron desktop app",
-				Usage:       "Create a scafolder to build a electron desktop app",
+				Description: "create a scafolder to build a electron desktop app",
+				Usage:       "create a scafolder to build a electron desktop app",
 				Action:      createElectron,
 				Flags: []cli.Flag{
 					&cli.StringFlag{
@@ -88,8 +88,8 @@ func init() {
 			{
 				Name:        "react",
 				Aliases:     []string{"r"},
-				Description: "Create a scafolder with webpack to use react",
-				Usage:       "Create a scafolder with webpack to use react",
+				Description: "create a scafolder with webpack to use react",
+				Usage:       "create a scafolder with webpack to use react",
 				Action:      createReactStructure,
 				Flags: []cli.Flag{
 					&cli.StringFlag{

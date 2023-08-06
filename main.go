@@ -6,6 +6,7 @@ import (
 
 	"github.com/urfave/cli/v2"
 
+	"create-app-cli/commands/compress"
 	"create-app-cli/commands/generate"
 	"create-app-cli/commands/new"
 	"create-app-cli/commands/serve"
@@ -28,6 +29,7 @@ func init() {
 		&new.NewCommand,
 		&generate.GenerateCommand,
 		&serve.ServeCommand,
+		&compress.CompressCommand,
 	}
 }
 

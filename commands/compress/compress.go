@@ -76,7 +76,8 @@ func compress(c *cli.Context) error {
 	if len(pathDirectory) > 0 {
 
 		// La funcion manejadora de cada archivo
-		readItem := func(path string, info fs.FileInfo, err error) error {
+		var readItem filepath.WalkFunc = func(path string, info fs.FileInfo, err error) error {
+
 			if info.IsDir() {
 				return nil
 			}
@@ -117,9 +118,7 @@ func compress(c *cli.Context) error {
 
 		fmt.Println("Leyendo directorios ...")
 
-		err := filepath.Walk(pathDirectory, readItem)
-
-		if err != nil {
+		if err := filepath.Walk(pathDirectory, readItem); err != nil {
 			return err
 		}
 

@@ -3,9 +3,12 @@ package generate
 import (
 	"create-app-cli/helpers"
 	"create-app-cli/snipets"
+	"encoding/json"
 	"fmt"
+	"os"
 	"path"
 
+	webpush "github.com/SherClockHolmes/webpush-go"
 	"github.com/urfave/cli/v2"
 )
 
@@ -75,6 +78,13 @@ func init() {
 					},
 				},
 			},
+			{
+				Name:        "vapid-keys",
+				Aliases:     []string{"vk"},
+				Action:      generateVapidKeys,
+				Description: "generate a key pair to conections to web notifications",
+				Usage:       "generate a key pair to conections to web notifications",
+			},
 		},
 	}
 }
@@ -123,6 +133,37 @@ func generateComponent(c *cli.Context) error {
 			return err
 		}
 	}
+
+	return nil
+}
+
+/***
+*	Archivo de generacion de vapid keys
+*	para la conexion de push server notifications
+**/
+func generateVapidKeys(c *cli.Context) error {
+	privateKey, publicKey, err := webpush.GenerateVAPIDKeys()
+
+	if err != nil {
+		return err
+	}
+
+	jsonData, err := json.Marshal(map[string]string{
+		"public_key":  publicKey,
+		"private_key": privateKey,
+	})
+
+	if err != nil {
+		return nil
+	}
+
+	err = os.WriteFile("vapid.json", jsonData, 0755)
+
+	if err != nil {
+		return nil
+	}
+
+	fmt.Println("Llaves webpush generadas con exito")
 
 	return nil
 }

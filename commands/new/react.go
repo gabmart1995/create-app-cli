@@ -13,6 +13,7 @@ import (
 func createReactStructure(c *cli.Context) error {
 	name := c.String("name")
 	latest := c.Bool("latest")
+	typescript := c.Bool("typescript")
 
 	var config models.Config
 
@@ -49,6 +50,14 @@ func createReactStructure(c *cli.Context) error {
 			},
 		}
 
+		// añade las depencias faltantes si se trabaja con typescript
+		if typescript {
+			config.DevDependencies["@types/react"] = "18.x"
+			config.DevDependencies["@types/react-dom"] = "18.x"
+			config.DevDependencies["ts-loader"] = "9.x"
+			config.DevDependencies["typescript"] = "5.x"
+		}
+
 	} else { // versiones de node8 a node15
 		config = models.Config{
 			Name:        name,
@@ -81,6 +90,14 @@ func createReactStructure(c *cli.Context) error {
 				"react-dom": "18.x",
 			},
 		}
+
+		// añade las depencias faltantes si se trabaja con typescript
+		if typescript {
+			config.DevDependencies["@types/react"] = "18.x"
+			config.DevDependencies["@types/react-dom"] = "18.x"
+			config.DevDependencies["ts-loader"] = "8.x"
+			config.DevDependencies["typescript"] = "4.x"
+		}
 	}
 
 	var pathFiles = path.Join(pwd, name)
@@ -100,18 +117,30 @@ func createReactStructure(c *cli.Context) error {
 	createPackageJSON(path.Join(pathFiles, "package.json"), &config)
 
 	createFile(path.Join(pathFiles, "dist", "index.html"), snipets.GetIndexModel())
-	createFile(path.Join(pathFiles, "src", "index.js"), snipets.GetReactModel())
+
+	if typescript {
+		createFile(path.Join(pathFiles, "src", "index.tsx"), snipets.GetReactModel())
+
+	} else {
+		createFile(path.Join(pathFiles, "src", "index.js"), snipets.GetReactModel())
+
+	}
+
 	createFile(path.Join(pathFiles, "src", "style.css"), "")
+	createFile(path.Join(pathFiles, ".babelrc"), snipets.GetBabelConfig())
 
 	// webpack config file
 	if latest {
-		createFile(path.Join(pathFiles, "webpack.config.js"), snipets.GetWebpackConfig5())
+		createFile(path.Join(pathFiles, "webpack.config.js"), snipets.GetWebpackConfig5(typescript))
 
 	} else {
-		createFile(path.Join(pathFiles, "webpack.config.js"), snipets.GetWebpackConfig())
+		createFile(path.Join(pathFiles, "webpack.config.js"), snipets.GetWebpackConfig(typescript))
 
 	}
-	createFile(path.Join(pathFiles, ".babelrc"), snipets.GetBabelConfig())
+
+	if typescript {
+		createFile(path.Join(pathFiles, "tsconfig.json"), snipets.GetTypescriptConfig())
+	}
 
 	fmt.Println("Archivos creados con éxito")
 

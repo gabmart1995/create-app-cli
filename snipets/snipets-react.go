@@ -7,8 +7,12 @@ import ReactDom from 'react-dom/client';
 
 import './style.css';
 
-const root = ReactDom.createRoot(document.getElementById('root'));
-root.render(<h1 className="test">Hello world</h1>);
+const rootElement = document.getElementById('root');
+
+if (rootElement) {
+  const root = ReactDom.createRoot(rootElement);
+  root.render(<h1 className="test">Hello world</h1>);
+}
 	`)
 }
 
@@ -28,7 +32,56 @@ func GetIndexModel() string {
 	`)
 }
 
-func GetWebpackConfig() string {
+func GetWebpackConfig(ts bool) string {
+	if ts { // flag de configuracion en typescript
+		return (`
+const path = require('path');
+
+const config = {
+  entry: [
+    './src/index.tsx'
+  ],
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'bundle.js'
+  },
+  module: {
+    rules: [
+      {
+        test: /\.(js|jsx)$/,
+        use: 'babel-loader',
+        exclude: /node_modules/
+      },
+      {
+        test: /\.ts(x)?$/,
+        loader: 'ts-loader',
+        exclude: /node_modules/
+      },
+      {
+        test: /\.css$/,
+        use: [
+            'style-loader',
+            'css-loader'
+        ],
+      },
+      // images
+      {
+          test: /\.(png|jpg|svg|gif)$/,
+          use: [
+              'file-loader'
+          ]
+      },
+    ]
+  },
+  devServer: {
+    contentBase: './dist'
+  }
+};
+
+module.exports = config;
+    `)
+	}
+
 	return (`
 const path = require('path');
 
@@ -72,7 +125,58 @@ module.exports = config;
 	`)
 }
 
-func GetWebpackConfig5() string {
+func GetWebpackConfig5(ts bool) string {
+	if ts { // flag de configuracion en typescript
+		return (`
+const path = require('path');
+
+const config = {
+  entry: [
+    './src/index.tsx'
+  ],
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'bundle.js'
+  },
+  module: {
+    rules: [
+      {
+        test: /\.(js|jsx)$/,
+        use: 'babel-loader',
+        exclude: /node_modules/
+      },
+      {
+        test: /\.ts(x)?$/,
+        loader: 'ts-loader',
+        exclude: /node_modules/
+      },
+      {
+        test: /\.css$/,
+        use: [
+            'style-loader',
+            'css-loader'
+        ],
+      },
+      // images
+      {
+          test: /\.(png|jpg|svg|gif)$/,
+          use: [
+              'file-loader'
+          ]
+      },
+    ]
+  },
+  devServer: {
+    static: {
+      directory: './dist'
+    }
+  }
+};
+
+module.exports = config;
+        `)
+	}
+
 	return (`
 const path = require('path');
 
@@ -91,6 +195,12 @@ const config = {
         use: 'babel-loader',
         exclude: /node_modules/
       },
+      /** discoment this for activate module of typescript */
+      /*{
+        test: /\.ts(x)?$/,
+        loader: 'ts-loader',
+        exclude: /node_modules/
+      },*/
       {
         test: /\.css$/,
         use: [
@@ -132,4 +242,28 @@ func GetBabelConfig() string {
 	]
 }	
 	`)
+}
+
+/** contenido del archivo con configuracion de typescript */
+func GetTypescriptConfig() string {
+	return (`
+{
+  "compilerOptions": {
+      "allowSyntheticDefaultImports": true,
+      "outDir": "./dist/",
+      "sourceMap": true,
+      "strict": true,
+      "noImplicitReturns": true,
+      "noImplicitAny": true,
+      "module": "es6",
+      "moduleResolution": "node",
+      "target": "es5",
+      "allowJs": true,
+      "jsx": "react",
+  },
+  "include": [
+      "./src/**/*"
+  ]
+}
+  `)
 }

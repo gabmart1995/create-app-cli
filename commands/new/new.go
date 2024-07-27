@@ -106,6 +106,13 @@ func init() {
 						Required: false,
 						Value:    false,
 					},
+					&cli.BoolFlag{ // flag para crear proyecto con typescript
+						Name:     "typescript",
+						Usage:    "-ts true",
+						Aliases:  []string{"ts"},
+						Required: false,
+						Value:    false,
+					},
 				},
 			},
 		},
@@ -136,7 +143,7 @@ func create(c *cli.Context) error {
 	}
 
 	// se leen los archivos
-	data := readFiles(pwd)
+	data := readFiles()
 
 	if !writeFiles(data, name) {
 		return errors.New("hubo un problema al crear los archivos")
@@ -148,7 +155,7 @@ func create(c *cli.Context) error {
 }
 
 /* lee los modelos de archivos de forma concurrente */
-func readFiles(pwd string) map[string]string {
+func readFiles() map[string]string {
 
 	var data map[string]string = make(map[string]string)
 

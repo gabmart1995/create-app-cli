@@ -41,6 +41,9 @@ const config = {
   entry: [
     './src/index.tsx'
   ],
+  resolve: { // incluye las extensiones a importar
+    extensions: ['.js', '.jsx', '.ts', '.tsx']
+  },
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'bundle.js'
@@ -137,6 +140,9 @@ const config = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'bundle.js'
+  },
+  resolve: { // incluye las extensiones a importar
+    extensions: ['.js', '.jsx', '.ts', '.tsx']
   },
   module: {
     rules: [

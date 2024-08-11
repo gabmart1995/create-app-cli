@@ -259,7 +259,8 @@ func GetTypescriptConfig() string {
       "moduleResolution": "node",
       "target": "es5",
       "allowJs": true,
-      "jsx": "react",
+      "jsx": "react-jsx",
+      "isolatedModules": true
   },
   "include": [
       "./src/**/*"
